@@ -2779,6 +2779,7 @@ protected:
 // Base range expression AST node object - abstract
 class RangeExpr : public ExprWithoutBlock
 {
+  std::vector<Attribute> outer_attrs;
   location_t locus;
 
 protected:
@@ -2790,8 +2791,7 @@ public:
 
   std::vector<Attribute> &get_outer_attrs () override final
   {
-    // RangeExpr cannot have any outer attributes
-    rust_assert (false);
+    return outer_attrs;
   }
 
   // should never be called - error if called

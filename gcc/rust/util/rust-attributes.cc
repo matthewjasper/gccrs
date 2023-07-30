@@ -41,20 +41,28 @@ static const BuiltinAttrDefinition __definitions[]
      {"link_section", CODE_GENERATION},
      {"no_mangle", CODE_GENERATION},
      {"repr", CODE_GENERATION},
-     {"rustc_builtin_macro", EXPANSION},
      {"path", EXPANSION},
      {"macro_use", NAME_RESOLUTION},
      {"macro_export", NAME_RESOLUTION},
      {"proc_macro", EXPANSION},
      {"proc_macro_derive", EXPANSION},
      {"proc_macro_attribute", EXPANSION},
+     {"prelude_import", NAME_RESOLUTION},
      // FIXME: This is not implemented yet, see
      // https://github.com/Rust-GCC/gccrs/issues/1475
      {"target_feature", CODE_GENERATION},
+     {"track_caller", CODE_GENERATION},
+     // #![feature(staged_api)]
+     {"stable", STATIC_ANALYSIS},
+     {"unstable", STATIC_ANALYSIS},
      // From now on, these are reserved by the compiler and gated through
      // #![feature(rustc_attrs)]
      {"rustc_inherit_overflow_checks", CODE_GENERATION},
-     {"stable", STATIC_ANALYSIS}};
+     {"rustc_builtin_macro", EXPANSION},
+     {"rustc_deprecated", STATIC_ANALYSIS},
+     {"rustc_diagnostic_item", STATIC_ANALYSIS},
+     {"rustc_const_stable", STATIC_ANALYSIS},
+     {"rustc_const_unstable", STATIC_ANALYSIS}};
 
 BuiltinAttributeMappings *
 BuiltinAttributeMappings::get ()
