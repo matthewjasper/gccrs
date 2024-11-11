@@ -394,7 +394,7 @@ this pass's documentation for more details on this resolution process.
 **/
 
 /**
- * Intended for use by ForeverStack to store Nodes
+ * Used by ForeverStack to store Nodes
  * Unlike ForeverStack, does not store a cursor reference
  * Intended to make path resolution in multiple namespaces simpler
  **/
