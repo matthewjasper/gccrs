@@ -963,42 +963,20 @@ transcribe_context (MacroExpander::ContextType ctx,
 		    Parser<MacroInvocLexer> &parser, bool semicolon,
 		    AST::DelimType delimiter, TokenId last_token_id)
 {
-  // The flow-chart in order to choose a parsing function is as follows:
-  //
-  // [switch special context]
-  //     -- Item --> parser.parse_item();
-  //     -- Trait --> parser.parse_trait_item();
-  //     -- Impl --> parser.parse_impl_item();
-  //     -- Extern --> parser.parse_extern_item();
-  //     -- None --> [has semicolon?]
-  //                 -- Yes --> parser.parse_stmt();
-  //                 -- No --> [switch invocation.delimiter()]
-  //                             -- { } --> parser.parse_stmt();
-  //                             -- _ --> parser.parse_expr(); // once!
-
-  // If there is a semicolon OR we are expanding a MacroInvocationSemi, then
-  // we can parse multiple items. Otherwise, parse *one* expression
-
   switch (ctx)
     {
     case MacroExpander::ContextType::ITEM:
       return transcribe_many_items (parser, last_token_id);
-      break;
     case MacroExpander::ContextType::TRAIT:
       return transcribe_many_trait_items (parser, last_token_id);
-      break;
     case MacroExpander::ContextType::IMPL:
       return transcribe_many_impl_items (parser, last_token_id);
-      break;
     case MacroExpander::ContextType::TRAIT_IMPL:
       return transcribe_many_trait_impl_items (parser, last_token_id);
-      break;
     case MacroExpander::ContextType::EXTERN:
       return transcribe_many_ext (parser, last_token_id);
-      break;
     case MacroExpander::ContextType::TYPE:
       return transcribe_type (parser);
-      break;
     case MacroExpander::ContextType::STMT:
       return transcribe_many_stmts (parser, last_token_id, semicolon);
     case MacroExpander::ContextType::EXPR:

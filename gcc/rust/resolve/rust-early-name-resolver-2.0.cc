@@ -226,6 +226,13 @@ Early::visit (AST::BlockExpr &block)
 void
 Early::visit (AST::Module &module)
 {
+  for (const auto &attr : module.get_outer_attrs ())
+    if (attr.get_path ().as_string () == "macro_use")
+      {
+	DefaultResolver::visit (module);
+	return;
+      }
+
   textual_scope.push ();
 
   DefaultResolver::visit (module);
