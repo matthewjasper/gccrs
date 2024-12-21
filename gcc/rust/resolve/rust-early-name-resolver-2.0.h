@@ -212,28 +212,6 @@ private:
   bool resolve_glob_import (NodeId use_dec_id, TopLevel::ImportKind &&import);
   bool resolve_rebind_import (NodeId use_dec_id, TopLevel::ImportKind &&import);
 
-  template <typename P>
-  std::vector<std::pair<Rib::Definition, Namespace>>
-  resolve_path_in_all_ns (const P &path)
-  {
-    const auto &segments = path.get_segments ();
-    std::vector<std::pair<Rib::Definition, Namespace>> resolved;
-
-    // Pair a definition with the namespace it was found in
-    auto pair_with_ns = [&] (Namespace ns) {
-      return [&, ns] (Rib::Definition def) {
-	auto pair = std::make_pair (def, ns);
-	return resolved.emplace_back (std::move (pair));
-      };
-    };
-
-    ctx.values.resolve_path (segments).map (pair_with_ns (Namespace::Values));
-    ctx.types.resolve_path (segments).map (pair_with_ns (Namespace::Types));
-    ctx.macros.resolve_path (segments).map (pair_with_ns (Namespace::Macros));
-
-    return resolved;
-  }
-
   // Handle an import, resolving it to its definition and adding it to the list
   // of import mappings
   void build_import_mapping (

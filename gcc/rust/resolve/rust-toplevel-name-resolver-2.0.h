@@ -66,26 +66,32 @@ public:
       Rebind,
     } kind;
 
-    static ImportKind Glob (AST::SimplePath &&to_resolve, Rib &values_rib,
-			    Rib &types_rib, Rib &macros_rib)
+    static ImportKind Glob (AST::SimplePath &&to_resolve,
+			    ForeverStack<Namespace::Values> values_stack,
+			    ForeverStack<Namespace::Types> types_stack,
+			    ForeverStack<Namespace::Macros> macros_stack)
     {
-      return ImportKind (Kind::Glob, std::move (to_resolve), values_rib,
-			 types_rib, macros_rib);
+      return ImportKind (Kind::Glob, std::move (to_resolve), values_stack,
+			 types_stack, macros_stack);
     }
 
-    static ImportKind Simple (AST::SimplePath &&to_resolve, Rib &values_rib,
-			      Rib &types_rib, Rib &macros_rib)
+    static ImportKind Simple (AST::SimplePath &&to_resolve,
+			      ForeverStack<Namespace::Values> values_stack,
+			      ForeverStack<Namespace::Types> types_stack,
+			      ForeverStack<Namespace::Macros> macros_stack)
     {
-      return ImportKind (Kind::Simple, std::move (to_resolve), values_rib,
-			 types_rib, macros_rib);
+      return ImportKind (Kind::Simple, std::move (to_resolve), values_stack,
+			 types_stack, macros_stack);
     }
 
     static ImportKind Rebind (AST::SimplePath &&to_resolve,
-			      AST::UseTreeRebind &&rebind, Rib &values_rib,
-			      Rib &types_rib, Rib &macros_rib)
+			      AST::UseTreeRebind &&rebind,
+			      ForeverStack<Namespace::Values> values_stack,
+			      ForeverStack<Namespace::Types> types_stack,
+			      ForeverStack<Namespace::Macros> macros_stack)
     {
-      return ImportKind (Kind::Rebind, std::move (to_resolve), values_rib,
-			 types_rib, macros_rib, std::move (rebind));
+      return ImportKind (Kind::Rebind, std::move (to_resolve), values_stack,
+			 types_stack, macros_stack, std::move (rebind));
     }
 
     // The path for `Early` to resolve.
@@ -94,17 +100,41 @@ public:
     // The path to rebind an import to - only present if kind is Kind::Rebind
     tl::optional<AST::UseTreeRebind> rebind;
 
-    Rib &values_rib;
-    Rib &types_rib;
-    Rib &macros_rib;
+    ForeverStack<Namespace::Values> values_stack;
+    ForeverStack<Namespace::Types> types_stack;
+    ForeverStack<Namespace::Macros> macros_stack;
+
+    std::vector<std::pair<Rib::Definition, Namespace>> resolve_path_in_all_ns ()
+    {
+      const auto &segments = to_resolve.get_segments ();
+      std::vector<std::pair<Rib::Definition, Namespace>> resolved;
+
+      // Pair a definition with the namespace it was found in
+      auto pair_with_ns = [&] (Namespace ns) {
+	return [&, ns] (Rib::Definition def) {
+	  auto pair = std::make_pair (def, ns);
+	  return resolved.emplace_back (std::move (pair));
+	};
+      };
+
+      values_stack.resolve_path (segments).map (
+	pair_with_ns (Namespace::Values));
+      types_stack.resolve_path (segments).map (pair_with_ns (Namespace::Types));
+      macros_stack.resolve_path (segments).map (
+	pair_with_ns (Namespace::Macros));
+
+      return resolved;
+    }
 
   private:
-    ImportKind (Kind kind, AST::SimplePath &&to_resolve, Rib &values_rib,
-		Rib &types_rib, Rib &macros_rib,
+    ImportKind (Kind kind, AST::SimplePath &&to_resolve,
+		ForeverStack<Namespace::Values> values_stack,
+		ForeverStack<Namespace::Types> types_stack,
+		ForeverStack<Namespace::Macros> macros_stack,
 		tl::optional<AST::UseTreeRebind> &&rebind = tl::nullopt)
       : kind (kind), to_resolve (std::move (to_resolve)),
-	rebind (std::move (rebind)), values_rib (values_rib),
-	types_rib (types_rib), macros_rib (macros_rib)
+	rebind (std::move (rebind)), values_stack (values_stack),
+	types_stack (types_stack), macros_stack (macros_stack)
     {}
   };
 

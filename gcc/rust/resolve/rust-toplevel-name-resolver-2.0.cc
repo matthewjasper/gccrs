@@ -502,9 +502,9 @@ TopLevel::visit (AST::UseDeclaration &use)
   auto rebind_path
     = std::vector<std::pair<AST::SimplePath, AST::UseTreeRebind>> ();
 
-  auto &values_rib = ctx.values.peek ();
-  auto &types_rib = ctx.types.peek ();
-  auto &macros_rib = ctx.macros.peek ();
+  auto &values_stack = ctx.values;
+  auto &types_stack = ctx.types;
+  auto &macros_stack = ctx.macros;
 
   // FIXME: How do we handle `use foo::{self}` imports? Some beforehand cleanup?
   // How do we handle module imports in general? Should they get added to all
@@ -516,17 +516,17 @@ TopLevel::visit (AST::UseDeclaration &use)
   auto imports = std::vector<ImportKind> ();
 
   for (auto &&path : paths)
-    imports.emplace_back (
-      ImportKind::Simple (std::move (path), values_rib, types_rib, macros_rib));
+    imports.emplace_back (ImportKind::Simple (std::move (path), values_stack,
+					      types_stack, macros_stack));
 
   for (auto &&glob : glob_path)
-    imports.emplace_back (
-      ImportKind::Glob (std::move (glob), values_rib, types_rib, macros_rib));
+    imports.emplace_back (ImportKind::Glob (std::move (glob), values_stack,
+					    types_stack, macros_stack));
 
   for (auto &&rebind : rebind_path)
     imports.emplace_back (
       ImportKind::Rebind (std::move (rebind.first), std::move (rebind.second),
-			  values_rib, types_rib, macros_rib));
+			  values_stack, types_stack, macros_stack));
 
   imports_to_resolve.insert ({use.get_node_id (), std::move (imports)});
 }

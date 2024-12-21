@@ -74,7 +74,8 @@ Early::go (AST::Crate &crate)
 bool
 Early::resolve_glob_import (NodeId use_dec_id, TopLevel::ImportKind &&glob)
 {
-  auto resolved = ctx.types.resolve_path (glob.to_resolve.get_segments ());
+  auto resolved
+    = glob.types_stack.resolve_path (glob.to_resolve.get_segments ());
   if (!resolved.has_value ())
     return false;
 
@@ -97,7 +98,7 @@ Early::resolve_glob_import (NodeId use_dec_id, TopLevel::ImportKind &&glob)
 bool
 Early::resolve_simple_import (NodeId use_dec_id, TopLevel::ImportKind &&import)
 {
-  auto definitions = resolve_path_in_all_ns (import.to_resolve);
+  auto definitions = import.resolve_path_in_all_ns ();
 
   // if we've found at least one definition, then we're good
   if (definitions.empty ())
@@ -116,7 +117,7 @@ bool
 Early::resolve_rebind_import (NodeId use_dec_id,
 			      TopLevel::ImportKind &&rebind_import)
 {
-  auto definitions = resolve_path_in_all_ns (rebind_import.to_resolve);
+  auto definitions = rebind_import.resolve_path_in_all_ns ();
 
   // if we've found at least one definition, then we're good
   if (definitions.empty ())
