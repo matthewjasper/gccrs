@@ -36,6 +36,7 @@ public:
   static constexpr auto &MUST_USE = "must_use";
   static constexpr auto &LANG = "lang";
   static constexpr auto &LINK_SECTION = "link_section";
+  static constexpr auto &LINK_NAME = "link_name";
   static constexpr auto &NO_MANGLE = "no_mangle";
   static constexpr auto &REPR = "repr";
   static constexpr auto &RUSTC_BUILTIN_MACRO = "rustc_builtin_macro";
@@ -55,6 +56,8 @@ public:
   static constexpr auto &UNSTABLE = "unstable";
   static constexpr auto &RUSTC_CONST_STABLE = "rustc_const_stable";
   static constexpr auto &RUSTC_CONST_UNSTABLE = "rustc_const_unstable";
+  static constexpr auto &RUSTC_ARGS_REQUIRED_CONST
+    = "rustc_args_required_const";
   static constexpr auto &MAY_DANGLE = "may_dangle";
   static constexpr auto &PRELUDE_IMPORT = "prelude_import";
 };

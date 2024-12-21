@@ -318,7 +318,14 @@ Early::visit_attributes (std::vector<AST::Attribute> &attrs)
 	      auto pm_def = mappings.lookup_derive_proc_macro_def (
 		definition->get_node_id ());
 
-	      rust_assert (pm_def.has_value ());
+	      if (!pm_def.has_value ())
+		{
+		  // FIXME: Change to proper error message
+		  collect_error (Error (trait.get ().get_locus (),
+					"could not resolve macro %qs",
+					trait.get ().as_string ().c_str ()));
+		  continue;
+		}
 
 	      mappings.insert_derive_proc_macro_invocation (trait,
 							    pm_def.value ());

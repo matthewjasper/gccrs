@@ -53,6 +53,7 @@ static const BuiltinAttrDefinition __definitions[]
      {Attrs::MUST_USE, STATIC_ANALYSIS},
      {Attrs::LANG, HIR_LOWERING},
      {Attrs::LINK_SECTION, CODE_GENERATION},
+     {Attrs::LINK_NAME, CODE_GENERATION},
      {Attrs::NO_MANGLE, CODE_GENERATION},
      {Attrs::REPR, CODE_GENERATION},
      {Attrs::RUSTC_BUILTIN_MACRO, EXPANSION},
@@ -74,6 +75,7 @@ static const BuiltinAttrDefinition __definitions[]
      // assuming we keep these for static analysis
      {Attrs::RUSTC_CONST_STABLE, STATIC_ANALYSIS},
      {Attrs::RUSTC_CONST_UNSTABLE, STATIC_ANALYSIS},
+     {Attrs::RUSTC_ARGS_REQUIRED_CONST, STATIC_ANALYSIS},
      {Attrs::PRELUDE_IMPORT, NAME_RESOLUTION}};
 
 BuiltinAttributeMappings *
