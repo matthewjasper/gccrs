@@ -286,9 +286,6 @@ EarlyNameResolver::visit (AST::LifetimeWhereClauseItem &)
 void
 EarlyNameResolver::visit (AST::Module &module)
 {
-  if (module.get_kind () == AST::Module::UNLOADED)
-    module.load_items ();
-
   // so we need to only go "one scope down" for fetching macros. Macros within
   // functions are still scoped only within that function. But we have to be
   // careful because nested modules with #[macro_use] actually works!

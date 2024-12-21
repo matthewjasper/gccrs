@@ -596,13 +596,6 @@ Session::compile_crate (const char *filename)
   if (last_step == CompileOptions::CompileStep::AttributeCheck)
     return;
 
-  Analysis::AttributeChecker ().go (parsed_crate);
-
-  if (last_step == CompileOptions::CompileStep::Expansion)
-    return;
-
-  AST::CollectLangItems ().go (parsed_crate);
-
   auto name_resolution_ctx = Resolver2_0::NameResolutionContext ();
   // expansion pipeline stage
 
@@ -615,6 +608,12 @@ Session::compile_crate (const char *filename)
       dump_ast_pretty (parsed_crate, true);
       rust_debug ("END POST-EXPANSION AST DUMP");
     }
+
+  if (last_step == CompileOptions::CompileStep::Expansion)
+    return;
+
+  Analysis::AttributeChecker ().go (parsed_crate);
+  AST::CollectLangItems ().go (parsed_crate);
 
   // AST Validation pass
   if (last_step == CompileOptions::CompileStep::ASTValidation)
