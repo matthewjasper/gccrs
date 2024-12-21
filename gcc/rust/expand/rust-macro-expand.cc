@@ -391,7 +391,7 @@ MacroExpander::match_fragment (Parser<MacroInvocLexer> &parser,
   switch (fragment.get_frag_spec ().get_kind ())
     {
     case AST::MacroFragSpec::EXPR:
-      parser.parse_expr ();
+      parser.parse_expr_with_attrs ();
       break;
 
     case AST::MacroFragSpec::BLOCK:
@@ -920,7 +920,7 @@ transcribe_expression (Parser<MacroInvocLexer> &parser)
   auto &lexer = parser.get_token_source ();
   auto start = lexer.get_offs ();
 
-  auto expr = parser.parse_expr ();
+  auto expr = parser.parse_expr_with_attrs ();
   if (expr == nullptr)
     return AST::Fragment::create_error ();
 

@@ -4792,7 +4792,7 @@ Parser<ManagedTokenSource>::parse_enum_item ()
 	// discriminant enum item
 	lexer.skip_token ();
 
-	std::unique_ptr<AST::Expr> discriminant_expr = parse_expr ();
+	std::unique_ptr<AST::Expr> discriminant_expr = parse_expr_with_attrs ();
 
 	return std::unique_ptr<AST::EnumItemDiscriminant> (
 	  new AST::EnumItemDiscriminant (std::move (item_name), std::move (vis),
@@ -8775,7 +8775,7 @@ Parser<ManagedTokenSource>::parse_array_expr (AST::AttrVec outer_attrs,
 		break;
 
 	      // parse expression (required)
-	      std::unique_ptr<AST::Expr> expr = parse_expr ();
+	      std::unique_ptr<AST::Expr> expr = parse_expr_with_attrs ();
 	      if (expr == nullptr)
 		{
 		  Error error (lexer.peek_token ()->get_locus (),
@@ -8884,7 +8884,7 @@ Parser<ManagedTokenSource>::parse_grouped_or_tuple_expr (
     }
 
   // parse first expression (required)
-  std::unique_ptr<AST::Expr> first_expr = parse_expr ();
+  std::unique_ptr<AST::Expr> first_expr = parse_expr_with_attrs ();
   if (first_expr == nullptr)
     {
       Error error (lexer.peek_token ()->get_locus (),
@@ -8923,7 +8923,7 @@ Parser<ManagedTokenSource>::parse_grouped_or_tuple_expr (
 	    break;
 
 	  // parse expr, which is now required
-	  std::unique_ptr<AST::Expr> expr = parse_expr ();
+	  std::unique_ptr<AST::Expr> expr = parse_expr_with_attrs ();
 	  if (expr == nullptr)
 	    {
 	      Error error (lexer.peek_token ()->get_locus (),
@@ -12100,6 +12100,14 @@ Parser<ManagedTokenSource>::left_denotations (std::unique_ptr<AST::Expr> expr,
 // Parse expression with lowest left binding power.
 template <typename ManagedTokenSource>
 std::unique_ptr<AST::Expr>
+Parser<ManagedTokenSource>::parse_expr_with_attrs ()
+{
+  return parse_expr (LBP_LOWEST, parse_outer_attributes (), {});
+}
+
+// Parse expression with lowest left binding power.
+template <typename ManagedTokenSource>
+std::unique_ptr<AST::Expr>
 Parser<ManagedTokenSource>::parse_expr (AST::AttrVec outer_attrs,
 					ParseRestrictions restrictions)
 {
@@ -13991,7 +13999,7 @@ Parser<ManagedTokenSource>::parse_method_call_expr (
   const_TokenPtr t = lexer.peek_token ();
   while (t->get_id () != RIGHT_PAREN)
     {
-      std::unique_ptr<AST::Expr> param = parse_expr ();
+      std::unique_ptr<AST::Expr> param = parse_expr_with_attrs ();
       if (param == nullptr)
 	{
 	  Error error (t->get_locus (),
@@ -14037,7 +14045,7 @@ Parser<ManagedTokenSource>::parse_function_call_expr (
   const_TokenPtr t = lexer.peek_token ();
   while (t->get_id () != RIGHT_PAREN)
     {
-      std::unique_ptr<AST::Expr> param = parse_expr ();
+      std::unique_ptr<AST::Expr> param = parse_expr_with_attrs ();
       if (param == nullptr)
 	{
 	  Error error (t->get_locus (),
@@ -14265,7 +14273,7 @@ Parser<ManagedTokenSource>::parse_struct_expr_tuple_partial (
   while (t->get_id () != RIGHT_PAREN)
     {
       // parse expression (required)
-      std::unique_ptr<AST::Expr> expr = parse_expr ();
+      std::unique_ptr<AST::Expr> expr = parse_expr_with_attrs ();
       if (expr == nullptr)
 	{
 	  Error error (t->get_locus (), "failed to parse expression in "

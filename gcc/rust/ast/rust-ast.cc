@@ -4250,7 +4250,10 @@ Attribute::check_cfg_predicate (const Session &session) const
     return false;
 
   auto &meta_item = static_cast<AttrInputMetaItemContainer &> (*attr_input);
-  return meta_item.get_items ().front ()->check_cfg_predicate (session);
+  auto const &items = meta_item.get_items ();
+  if (items.size () == 0)
+    return false;
+  return items.front ()->check_cfg_predicate (session);
 }
 
 std::vector<Attribute>
@@ -5060,7 +5063,8 @@ FormatArgs::get_outer_attrs ()
   rust_unreachable ();
 }
 
-void FormatArgs::set_outer_attrs (std::vector<Attribute>)
+void
+FormatArgs::set_outer_attrs (std::vector<Attribute>)
 {
   rust_unreachable ();
 }

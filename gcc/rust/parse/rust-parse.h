@@ -139,6 +139,8 @@ public:
    */
   bool maybe_skip_token (TokenId t);
 
+  std::unique_ptr<AST::Expr> parse_expr_with_attrs ();
+
   std::unique_ptr<AST::Expr>
   parse_expr (AST::AttrVec outer_attrs = AST::AttrVec (),
 	      ParseRestrictions restrictions = ParseRestrictions ());
