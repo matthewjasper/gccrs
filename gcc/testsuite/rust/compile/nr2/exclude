@@ -107,7 +107,6 @@ macros/mbe/macro50.rs
 macros/mbe/macro54.rs
 macros/mbe/macro6.rs
 macros/mbe/macro_rules_macro_rules.rs
-macros/mbe/macro_use1.rs
 match-never-ltype.rs
 match-never-rtype.rs
 match1.rs
@@ -122,7 +121,6 @@ multiple_bindings2.rs
 name_resolution2.rs
 name_resolution4.rs
 nested_generic.rs
-nested_macro_use1.rs
 nested_macro_use2.rs
 nested_macro_use3.rs
 non_member_const.rs
