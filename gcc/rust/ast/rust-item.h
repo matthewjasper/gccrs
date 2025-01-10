@@ -869,14 +869,31 @@ public:
   Unsafety get_unsafety () const { return safety; }
 
   // TODO: think of better way to do this - mutable getter seems dodgy
-  const std::vector<Attribute> &get_inner_attrs () const { return inner_attrs; }
-  std::vector<Attribute> &get_inner_attrs () { return inner_attrs; }
+  const std::vector<Attribute> &get_inner_attrs () const
+  {
+    rust_assert (kind == ModuleKind::LOADED);
+    return inner_attrs;
+  }
+  std::vector<Attribute> &get_inner_attrs ()
+  {
+    rust_assert (kind == ModuleKind::LOADED);
+    return inner_attrs;
+  }
 
-  const std::vector<std::unique_ptr<Item>> &get_items () const { return items; }
-  std::vector<std::unique_ptr<Item>> &get_items () { return items; }
+  const std::vector<std::unique_ptr<Item>> &get_items () const
+  {
+    rust_assert (kind == ModuleKind::LOADED);
+    return items;
+  }
+  std::vector<std::unique_ptr<Item>> &get_items ()
+  {
+    rust_assert (kind == ModuleKind::LOADED);
+    return items;
+  }
 
   std::vector<std::unique_ptr<AST::Item>> take_items ()
   {
+    rust_assert (kind == ModuleKind::LOADED);
     return std::move (items);
   }
 

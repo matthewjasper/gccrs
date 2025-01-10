@@ -3433,7 +3433,11 @@ Module::process_file_path ()
 void
 Module::load_items ()
 {
+  rust_assert (kind == ModuleKind::UNLOADED);
   process_file_path ();
+  // Always mark as loaded: we don't want to try loading again if this fails
+  // and need the asserts when trying to access the contents to pass.
+  kind = ModuleKind::LOADED;
 
   // We will already have errored out appropriately in the process_file_path ()
   // method
@@ -3461,7 +3465,6 @@ Module::load_items ()
     error.emit ();
 
   items = std::move (parsed_items);
-  kind = ModuleKind::LOADED;
 }
 
 void
