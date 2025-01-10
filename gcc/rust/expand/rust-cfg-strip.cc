@@ -1759,16 +1759,16 @@ CfgStrip::visit (AST::Module &module)
       return;
     }
 
-  // A loaded module might have inner attributes
-  if (module.get_kind () == AST::Module::ModuleKind::LOADED)
+  // Can now load the module
+  if (module.get_kind () == AST::Module::ModuleKind::UNLOADED)
+    module.load_items ();
+
+  // strip test based on inner attrs
+  expand_cfg_attrs (module.get_inner_attrs ());
+  if (fails_cfg_with_expand (module.get_inner_attrs ()))
     {
-      // strip test based on inner attrs
-      expand_cfg_attrs (module.get_inner_attrs ());
-      if (fails_cfg_with_expand (module.get_inner_attrs ()))
-	{
-	  module.mark_for_strip ();
-	  return;
-	}
+      module.mark_for_strip ();
+      return;
     }
 
   // strip items if required

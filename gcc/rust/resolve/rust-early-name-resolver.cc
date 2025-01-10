@@ -42,11 +42,7 @@ EarlyNameResolver::accumulate_escaped_macros (AST::Module &module)
   if (!is_macro_use_module (module))
     return {};
 
-  // Parse the module's items if they haven't been expanded and the file
-  // should be parsed (i.e isn't hidden behind an untrue or impossible cfg
-  // directive)
-  if (module.get_kind () == AST::Module::UNLOADED)
-    module.load_items ();
+  rust_assert (module.get_kind () == AST::Module::LOADED);
 
   std::vector<std::unique_ptr<AST::Item>> escaped_macros;
 
@@ -286,8 +282,7 @@ EarlyNameResolver::visit (AST::LifetimeWhereClauseItem &)
 void
 EarlyNameResolver::visit (AST::Module &module)
 {
-  if (module.get_kind () == AST::Module::UNLOADED)
-    module.load_items ();
+  rust_assert (module.get_kind () == AST::Module::LOADED);
 
   // so we need to only go "one scope down" for fetching macros. Macros within
   // functions are still scoped only within that function. But we have to be
