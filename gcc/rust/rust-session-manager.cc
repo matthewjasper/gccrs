@@ -599,13 +599,6 @@ Session::compile_crate (const char *filename)
   if (last_step == CompileOptions::CompileStep::AttributeCheck)
     return;
 
-  Analysis::AttributeChecker ().go (parsed_crate);
-
-  if (last_step == CompileOptions::CompileStep::Expansion)
-    return;
-
-  AST::CollectLangItems ().go (parsed_crate);
-
   auto name_resolution_ctx = Resolver2_0::NameResolutionContext ();
   // expansion pipeline stage
 
@@ -622,6 +615,13 @@ Session::compile_crate (const char *filename)
   // AST Validation pass
   if (last_step == CompileOptions::CompileStep::ASTValidation)
     return;
+
+  Analysis::AttributeChecker ().go (parsed_crate);
+
+  if (last_step == CompileOptions::CompileStep::Expansion)
+    return;
+
+  AST::CollectLangItems ().go (parsed_crate);
 
   ASTValidation ().check (parsed_crate);
 
